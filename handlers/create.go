@@ -25,22 +25,21 @@ func (wrapHandler *WrapperHandler) CreateHandler(w http.ResponseWriter, r *http.
 	// birth_date в date
 	date, errParse := time.Parse(types.Layout, birthDate)
 	if errParse != nil {
-		wrapHandler.log.Error().Caller().Msg("не удалось преобразовать дату в формат")
+		wrapHandler.log.Error().Err(errParse).Caller().Msg("не удалось преобразовать дату в формат")
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	wrapHandler.log.Debug().Msgf("Получены данные name %s, birthDate %s", name, date.String())
+	wrapHandler.log.Debug().Msgf("получены данные name %s, birthDate %s", name, date.String())
 
 	// запись в БД
 	errInsert := wrapHandler.dbClient.InsertUser(name, date)
 	if errInsert != nil {
-		wrapHandler.log.Error().Caller().Msg("неуспешная запись в БД")
+		wrapHandler.log.Error().Err(errInsert).Caller().Send()
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
-	wrapHandler.log.Debug().Msgf("Пользователь %s записан в БД", name)
+	wrapHandler.log.Debug().Msgf("пользователь %s записан в БД", name)
 
-	w.WriteHeader(http.StatusOK)
 }

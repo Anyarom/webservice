@@ -7,6 +7,9 @@ import (
 )
 
 func (client *Client) InsertUser(name string, birthDate time.Time) error {
+	client.mx.Lock()
+	defer client.mx.Unlock()
+
 	_, err := client.Exec(`INSERT INTO users 
 		(name, birth_date)
 		VALUES ($1, $2)`, name, birthDate)

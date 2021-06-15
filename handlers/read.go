@@ -18,7 +18,7 @@ func (wrapHandler *WrapperHandler) ReadHandler(w http.ResponseWriter, r *http.Re
 
 	id := r.URL.Query().Get("id")
 	if id == "" {
-		wrapHandler.log.Error().Caller().Msg("Параметр id не корректный")
+		wrapHandler.log.Error().Caller().Msg("параметр id не корректный")
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
